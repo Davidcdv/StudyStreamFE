@@ -12,23 +12,39 @@ const Topbar = () => {
 
 	return (
 		<div
-			className='flex items-center justify-between p-4 sticky top-0 bg-zinc-900/75 
+			className='flex flex-wrap items-center justify-between gap-3 p-4 sticky top-0 bg-zinc-900/75 
       backdrop-blur-md z-10
     '
 		>
 			<Link to='/app' className='min-w-0'>
 				<BrandMark size='sm' />
 			</Link>
-			<div className='flex items-center gap-4'>
-				<Link to={"/focus"} className={cn(buttonVariants({ variant: "outline" }))}>
-					<Brain className='size-4 mr-2' />
-					Focus Mode
+			<div className='flex flex-wrap items-center gap-2 sm:gap-4'>
+				<Link
+					to={"/focus"}
+					className={cn(
+						buttonVariants({
+							variant: "outline",
+							className: "px-3 sm:px-4",
+						})
+					)}
+				>
+					<Brain className='size-4 sm:mr-2' />
+					<span className='hidden sm:inline'>Focus Mode</span>
 				</Link>
 
 				{isAdmin && (
-					<Link to={"/admin"} className={cn(buttonVariants({ variant: "outline" }))}>
-						<LayoutDashboardIcon className='size-4  mr-2' />
-						Admin Dashboard
+					<Link
+						to={"/admin"}
+						className={cn(
+							buttonVariants({
+								variant: "outline",
+								className: "px-3 sm:px-4",
+							})
+						)}
+					>
+						<LayoutDashboardIcon className='size-4 sm:mr-2' />
+						<span className='hidden sm:inline'>Admin Dashboard</span>
 					</Link>
 				)}
 

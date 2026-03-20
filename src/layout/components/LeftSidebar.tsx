@@ -7,12 +7,80 @@ import { Brain, LayoutDashboard, Library } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-const LeftSidebar = () => {
+const LeftSidebar = ({ compact = false }: { compact?: boolean }) => {
 	const { albums, fetchAlbums, isLoading } = useMusicStore();
 
 	useEffect(() => {
 		fetchAlbums();
 	}, [fetchAlbums]);
+
+	if (compact) {
+		return (
+			<div className='rounded-lg bg-zinc-900 p-3'>
+				<div className='grid grid-cols-2 gap-2'>
+					<Link
+						to={"/app"}
+						className={cn(
+							buttonVariants({
+								variant: "ghost",
+								className: "justify-start text-white hover:bg-zinc-800",
+							})
+						)}
+					>
+						<LayoutDashboard className='mr-2 size-5' />
+						Dashboard
+					</Link>
+
+					<Link
+						to={"/focus"}
+						className={cn(
+							buttonVariants({
+								variant: "ghost",
+								className: "justify-start text-white hover:bg-zinc-800",
+							})
+						)}
+					>
+						<Brain className='mr-2 size-5' />
+						Focus Mode
+					</Link>
+				</div>
+
+				<div className='mt-3'>
+					<div className='mb-2 flex items-center text-white px-1'>
+						<Library className='size-4 mr-2' />
+						<span className='text-sm font-medium'>Playlists</span>
+					</div>
+					<div className='flex gap-3 overflow-x-auto pb-1'>
+						{isLoading
+							? Array.from({ length: 3 }, (_, index) => (
+									<div
+										key={`playlist-skeleton-${index}`}
+										className='min-w-[140px] animate-pulse rounded-xl bg-zinc-800 p-3'
+									>
+										<div className='mb-2 h-20 rounded-lg bg-zinc-700' />
+										<div className='h-3 rounded bg-zinc-700' />
+									</div>
+							  ))
+							: albums.map((album) => (
+									<Link
+										to={`/albums/${album._id}`}
+										key={album._id}
+										className='min-w-[150px] rounded-xl border border-white/10 bg-zinc-800/60 p-3'
+									>
+										<img
+											src={album.imageUrl}
+											alt={album.title}
+											className='mb-3 h-24 w-full rounded-lg object-cover'
+										/>
+										<p className='truncate text-sm font-medium text-white'>{album.title}</p>
+										<p className='truncate text-xs text-zinc-400'>{album.artist}</p>
+									</Link>
+							  ))}
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className='h-full flex flex-col gap-2'>
