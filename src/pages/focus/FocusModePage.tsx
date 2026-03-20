@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Slider } from "@/components/ui/slider";
 import { buildStudyRecommendations, getPrimaryRecommendation } from "@/lib/focusRecommendations";
 import AmbientSoundEngine from "@/pages/focus/components/AmbientSoundEngine";
 import FocusChart from "@/pages/focus/components/FocusChart";
@@ -96,6 +97,7 @@ const FocusModePage = () => {
 		totalFocusMinutes,
 		history,
 		selectedAmbientSound,
+		ambientVolume,
 		distractionFree,
 		activeRecommendationId,
 		isLoading: isFocusLoading,
@@ -106,6 +108,7 @@ const FocusModePage = () => {
 		tick,
 		loadFocusData,
 		setSelectedAmbientSound,
+		setAmbientVolume,
 		setDistractionFree,
 		setActiveRecommendation,
 	} = useFocusStore();
@@ -202,7 +205,7 @@ const FocusModePage = () => {
 
 	return (
 		<main className='h-screen overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_35%),linear-gradient(180deg,_#18181b_0%,_#09090b_100%)] text-white'>
-			<AmbientSoundEngine sound={selectedAmbientSound} enabled={isSessionActive} />
+			<AmbientSoundEngine sound={selectedAmbientSound} enabled={isSessionActive} volume={ambientVolume} />
 
 			<ScrollArea className='h-full'>
 				<div className='mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8'>
@@ -353,6 +356,20 @@ const FocusModePage = () => {
 													</button>
 												);
 											})}
+										</div>
+
+										<div className='mt-4 rounded-2xl border border-white/10 bg-zinc-900/70 p-4'>
+											<div className='mb-2 flex items-center justify-between text-sm'>
+												<span className='font-medium text-white'>Ambient volume</span>
+												<span className='text-zinc-400'>{ambientVolume}%</span>
+											</div>
+											<Slider
+												value={[ambientVolume]}
+												max={100}
+												step={1}
+												className='w-full hover:cursor-grab active:cursor-grabbing'
+												onValueChange={(value) => setAmbientVolume(value[0])}
+											/>
 										</div>
 									</div>
 

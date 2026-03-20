@@ -21,6 +21,7 @@ interface FocusStore {
 	totalFocusMinutes: number;
 	history: FocusHistoryEntry[];
 	selectedAmbientSound: AmbientSound;
+	ambientVolume: number;
 	distractionFree: boolean;
 	activeRecommendationId: string | null;
 	isLoading: boolean;
@@ -33,6 +34,7 @@ interface FocusStore {
 	completeSession: () => Promise<void>;
 	loadFocusData: () => Promise<void>;
 	setSelectedAmbientSound: (sound: AmbientSound) => void;
+	setAmbientVolume: (volume: number) => void;
 	setDistractionFree: (enabled: boolean) => void;
 	setActiveRecommendation: (id: string) => void;
 }
@@ -77,6 +79,7 @@ export const useFocusStore = create<FocusStore>()(
 			totalFocusMinutes: 0,
 			history: [],
 			selectedAmbientSound: "rain",
+			ambientVolume: 35,
 			distractionFree: true,
 			activeRecommendationId: null,
 			isLoading: false,
@@ -170,6 +173,7 @@ export const useFocusStore = create<FocusStore>()(
 			},
 
 			setSelectedAmbientSound: (sound) => set({ selectedAmbientSound: sound }),
+			setAmbientVolume: (volume) => set({ ambientVolume: Math.max(0, Math.min(100, volume)) }),
 			setDistractionFree: (enabled) => set({ distractionFree: enabled }),
 			setActiveRecommendation: (id) => set({ activeRecommendationId: id }),
 		}),
@@ -185,6 +189,7 @@ export const useFocusStore = create<FocusStore>()(
 				totalFocusMinutes: state.totalFocusMinutes,
 				history: state.history,
 				selectedAmbientSound: state.selectedAmbientSound,
+				ambientVolume: state.ambientVolume,
 				distractionFree: state.distractionFree,
 				activeRecommendationId: state.activeRecommendationId,
 			}),

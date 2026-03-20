@@ -89,7 +89,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 	},
 
 	playNext: () => {
-		const { currentIndex, queue, isShuffleEnabled, isRepeatEnabled } = get();
+		const { currentIndex, queue, isShuffleEnabled } = get();
 		if (queue.length === 0) return;
 
 		let nextIndex = currentIndex + 1;
@@ -109,14 +109,6 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 			set({
 				currentSong: nextSong,
 				currentIndex: nextIndex,
-				isPlaying: true,
-			});
-		} else if (isRepeatEnabled) {
-			const nextSong = queue[0];
-			useChatStore.getState().updateActivity(`MUSIC|${nextSong.title}|${nextSong.artist}`);
-			set({
-				currentSong: nextSong,
-				currentIndex: 0,
 				isPlaying: true,
 			});
 		} else {

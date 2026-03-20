@@ -4,6 +4,7 @@ import { useEffect } from "react";
 type AmbientSoundEngineProps = {
 	sound: AmbientSound;
 	enabled: boolean;
+	volume: number;
 };
 
 type AmbientNodes = {
@@ -42,7 +43,7 @@ const stopNodes = (nodes: AmbientNodes | null) => {
 	nodes.humGain?.disconnect();
 };
 
-const AmbientSoundEngine = ({ sound, enabled }: AmbientSoundEngineProps) => {
+const AmbientSoundEngine = ({ sound, enabled, volume }: AmbientSoundEngineProps) => {
 	useEffect(() => {
 		if (!enabled || sound === "none") return;
 
@@ -55,7 +56,8 @@ const AmbientSoundEngine = ({ sound, enabled }: AmbientSoundEngineProps) => {
 		const buildNodes = () => {
 			const source = createNoiseSource(audioContext);
 			const gain = audioContext.createGain();
-			gain.gain.value = 0.03;
+			const volumeMultiplier = Math.max(volume, 0) / 100;
+			gain.gain.value = 0.03 * volumeMultiplier;
 
 			if (sound === "white-noise") {
 				source.connect(gain);
@@ -68,7 +70,7 @@ const AmbientSoundEngine = ({ sound, enabled }: AmbientSoundEngineProps) => {
 				const filter = audioContext.createBiquadFilter();
 				filter.type = "highpass";
 				filter.frequency.value = 900;
-				gain.gain.value = 0.025;
+				gain.gain.value = 0.025 * volumeMultiplier;
 
 				source.connect(filter);
 				filter.connect(gain);
@@ -88,8 +90,8 @@ const AmbientSoundEngine = ({ sound, enabled }: AmbientSoundEngineProps) => {
 			humOscillator.frequency.value = 180;
 
 			const humGain = audioContext.createGain();
-			humGain.gain.value = 0.008;
-			gain.gain.value = 0.018;
+			humGain.gain.value = 0.008 * volumeMultiplier;
+			gain.gain.value = 0.018 * volumeMultiplier;
 
 			source.connect(filter);
 			filter.connect(gain);
@@ -112,7 +114,7 @@ const AmbientSoundEngine = ({ sound, enabled }: AmbientSoundEngineProps) => {
 			stopNodes(currentNodes);
 			void audioContext.close();
 		};
-	}, [enabled, sound]);
+	}, [enabled, sound, volume]);
 
 	return null;
 };
