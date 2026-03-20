@@ -220,9 +220,9 @@ const FocusModePage = () => {
 
 						<div className='flex flex-wrap items-center gap-3'>
 							<Button asChild variant='outline' className='border-white/15 bg-white/5 text-white hover:bg-white/10'>
-								<Link to='/'>
+								<Link to='/app'>
 									<ArrowLeft className='mr-2 size-4' />
-									Back to Home
+									Back to Dashboard
 								</Link>
 							</Button>
 							<Button
@@ -245,7 +245,7 @@ const FocusModePage = () => {
 						</div>
 					</div>
 
-					<div className='grid gap-6 lg:grid-cols-[1.2fr_0.8fr]'>
+					<div className={`grid gap-6 ${hideSecondaryPanels ? "lg:grid-cols-1" : "lg:grid-cols-[1.2fr_0.8fr]"}`}>
 						<section className='rounded-3xl border border-white/10 bg-zinc-950/80 p-6 shadow-2xl shadow-black/30'>
 							<div className='flex flex-col gap-6'>
 								<div className='flex flex-wrap items-start justify-between gap-4'>
@@ -421,39 +421,41 @@ const FocusModePage = () => {
 							</div>
 						</section>
 
-						<aside className='grid gap-4'>
-							<div className='rounded-3xl border border-white/10 bg-zinc-950/80 p-5'>
-								<div className='mb-4 flex items-center gap-2'>
-									<BarChart3 className='size-4 text-emerald-300' />
-									<h3 className='font-semibold'>Productivity tracking</h3>
-								</div>
-
-								<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-1'>
-									<div className='rounded-2xl bg-white/5 p-4'>
-										<div className='text-sm text-zinc-400'>Total focus time</div>
-										<div className='mt-2 text-3xl font-bold'>{totalFocusMinutes} min</div>
-										<div className='mt-1 text-sm text-zinc-500'>All completed Pomodoro sessions.</div>
+						{!hideSecondaryPanels && (
+							<aside className='grid gap-4'>
+								<div className='rounded-3xl border border-white/10 bg-zinc-950/80 p-5'>
+									<div className='mb-4 flex items-center gap-2'>
+										<BarChart3 className='size-4 text-emerald-300' />
+										<h3 className='font-semibold'>Productivity tracking</h3>
 									</div>
 
-									<div className='rounded-2xl bg-white/5 p-4'>
-										<div className='text-sm text-zinc-400'>Sessions completed</div>
-										<div className='mt-2 text-3xl font-bold'>{completedSessions}</div>
-										<div className='mt-1 text-sm text-zinc-500'>Every finished 25-minute block is counted.</div>
+									<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-1'>
+										<div className='rounded-2xl bg-white/5 p-4'>
+											<div className='text-sm text-zinc-400'>Total focus time</div>
+											<div className='mt-2 text-3xl font-bold'>{totalFocusMinutes} min</div>
+											<div className='mt-1 text-sm text-zinc-500'>All completed Pomodoro sessions.</div>
+										</div>
+
+										<div className='rounded-2xl bg-white/5 p-4'>
+											<div className='text-sm text-zinc-400'>Sessions completed</div>
+											<div className='mt-2 text-3xl font-bold'>{completedSessions}</div>
+											<div className='mt-1 text-sm text-zinc-500'>Every finished 25-minute block is counted.</div>
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<div className='rounded-3xl border border-white/10 bg-zinc-950/80 p-5'>
-								<div className='mb-4 flex items-center gap-2'>
-									<Shield className='size-4 text-emerald-300' />
-									<h3 className='font-semibold'>Distraction control</h3>
+								<div className='rounded-3xl border border-white/10 bg-zinc-950/80 p-5'>
+									<div className='mb-4 flex items-center gap-2'>
+										<Shield className='size-4 text-emerald-300' />
+										<h3 className='font-semibold'>Distraction control</h3>
+									</div>
+									<p className='text-sm leading-6 text-zinc-400'>
+										When the distraction shield is on, this page hides the extra recommendation and analytics panels during
+										active focus sessions so the timer and music stay center stage.
+									</p>
 								</div>
-								<p className='text-sm leading-6 text-zinc-400'>
-									When the distraction shield is on, this page hides the extra recommendation and analytics panels during
-									active focus sessions so the timer and music stay center stage.
-								</p>
-							</div>
-						</aside>
+							</aside>
+						)}
 					</div>
 
 					{hideSecondaryPanels ? (

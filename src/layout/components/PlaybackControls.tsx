@@ -1,7 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { usePlayerStore } from "@/stores/usePlayerStore";
-import { Laptop2, ListMusic, Mic2, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume1 } from "lucide-react";
+import {
+	Pause,
+	Play,
+	Repeat,
+	Shuffle,
+	SkipBack,
+	SkipForward,
+	Volume1,
+	Volume2,
+	VolumeX,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 const formatTime = (seconds: number) => {
@@ -11,9 +21,20 @@ const formatTime = (seconds: number) => {
 };
 
 export const PlaybackControls = () => {
-	const { currentSong, isPlaying, togglePlay, playNext, playPrevious } = usePlayerStore();
+	const {
+		currentSong,
+		isPlaying,
+		isShuffleEnabled,
+		isRepeatEnabled,
+		togglePlay,
+		toggleShuffle,
+		toggleRepeat,
+		playNext,
+		playPrevious,
+	} = usePlayerStore();
 
 	const [volume, setVolume] = useState(75);
+	const [lastVolume, setLastVolume] = useState(75);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -29,25 +50,43 @@ export const PlaybackControls = () => {
 
 		audio.addEventListener("timeupdate", updateTime);
 		audio.addEventListener("loadedmetadata", updateDuration);
-
-		const handleEnded = () => {
-			usePlayerStore.setState({ isPlaying: false });
-		};
-
-		audio.addEventListener("ended", handleEnded);
+		audio.volume = volume / 100;
 
 		return () => {
 			audio.removeEventListener("timeupdate", updateTime);
 			audio.removeEventListener("loadedmetadata", updateDuration);
-			audio.removeEventListener("ended", handleEnded);
 		};
-	}, [currentSong]);
+	}, [currentSong, volume]);
 
 	const handleSeek = (value: number[]) => {
 		if (audioRef.current) {
 			audioRef.current.currentTime = value[0];
 		}
 	};
+
+	const handleVolumeChange = (value: number[]) => {
+		const nextVolume = value[0];
+		setVolume(nextVolume);
+		if (nextVolume > 0) {
+			setLastVolume(nextVolume);
+		}
+		if (audioRef.current) {
+			audioRef.current.volume = nextVolume / 100;
+		}
+	};
+
+	const toggleMute = () => {
+		const nextVolume = volume === 0 ? lastVolume || 75 : 0;
+		setVolume(nextVolume);
+		if (nextVolume > 0) {
+			setLastVolume(nextVolume);
+		}
+		if (audioRef.current) {
+			audioRef.current.volume = nextVolume / 100;
+		}
+	};
+
+	const VolumeIcon = volume === 0 ? VolumeX : volume < 50 ? Volume1 : Volume2;
 
 	return (
 		<footer className='h-20 sm:h-24 bg-zinc-900 border-t border-zinc-800 px-4'>
@@ -79,7 +118,11 @@ export const PlaybackControls = () => {
 						<Button
 							size='icon'
 							variant='ghost'
-							className='hidden sm:inline-flex hover:text-white text-zinc-400'
+							className={`hidden sm:inline-flex ${
+								isShuffleEnabled ? "text-emerald-400 hover:text-emerald-300" : "text-zinc-400 hover:text-white"
+							}`}
+							onClick={toggleShuffle}
+							disabled={!currentSong}
 						>
 							<Shuffle className='h-4 w-4' />
 						</Button>
@@ -114,7 +157,11 @@ export const PlaybackControls = () => {
 						<Button
 							size='icon'
 							variant='ghost'
-							className='hidden sm:inline-flex hover:text-white text-zinc-400'
+							className={`hidden sm:inline-flex ${
+								isRepeatEnabled ? "text-emerald-400 hover:text-emerald-300" : "text-zinc-400 hover:text-white"
+							}`}
+							onClick={toggleRepeat}
+							disabled={!currentSong}
 						>
 							<Repeat className='h-4 w-4' />
 						</Button>
@@ -134,19 +181,9 @@ export const PlaybackControls = () => {
 				</div>
 				{/* volume controls */}
 				<div className='hidden sm:flex items-center gap-4 min-w-[180px] w-[30%] justify-end'>
-					<Button size='icon' variant='ghost' className='hover:text-white text-zinc-400'>
-						<Mic2 className='h-4 w-4' />
-					</Button>
-					<Button size='icon' variant='ghost' className='hover:text-white text-zinc-400'>
-						<ListMusic className='h-4 w-4' />
-					</Button>
-					<Button size='icon' variant='ghost' className='hover:text-white text-zinc-400'>
-						<Laptop2 className='h-4 w-4' />
-					</Button>
-
 					<div className='flex items-center gap-2'>
-						<Button size='icon' variant='ghost' className='hover:text-white text-zinc-400'>
-							<Volume1 className='h-4 w-4' />
+						<Button size='icon' variant='ghost' className='hover:text-white text-zinc-400' onClick={toggleMute}>
+							<VolumeIcon className='h-4 w-4' />
 						</Button>
 
 						<Slider
@@ -154,12 +191,7 @@ export const PlaybackControls = () => {
 							max={100}
 							step={1}
 							className='w-24 hover:cursor-grab active:cursor-grabbing'
-							onValueChange={(value) => {
-								setVolume(value[0]);
-								if (audioRef.current) {
-									audioRef.current.volume = value[0] / 100;
-								}
-							}}
+							onValueChange={handleVolumeChange}
 						/>
 					</div>
 				</div>

@@ -16,7 +16,7 @@ const Topbar = () => {
       backdrop-blur-md z-10
     '
 		>
-			<Link to='/' className='min-w-0'>
+			<Link to='/app' className='min-w-0'>
 				<BrandMark size='sm' />
 			</Link>
 			<div className='flex items-center gap-4'>

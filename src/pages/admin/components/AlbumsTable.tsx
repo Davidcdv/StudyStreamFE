@@ -2,14 +2,33 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { Calendar, Music, Trash2 } from "lucide-react";
-import { useEffect } from "react";
 
 const AlbumsTable = () => {
-	const { albums, deleteAlbum, fetchAlbums } = useMusicStore();
+	const { albums, deleteAlbum, isLoading, error } = useMusicStore();
 
-	useEffect(() => {
-		fetchAlbums();
-	}, [fetchAlbums]);
+	if (isLoading && albums.length === 0) {
+		return (
+			<div className='flex items-center justify-center py-8'>
+				<div className='text-zinc-400'>Loading albums...</div>
+			</div>
+		);
+	}
+
+	if (error && albums.length === 0) {
+		return (
+			<div className='flex items-center justify-center py-8'>
+				<div className='text-red-400'>{error}</div>
+			</div>
+		);
+	}
+
+	if (albums.length === 0) {
+		return (
+			<div className='flex items-center justify-center py-8'>
+				<div className='text-zinc-400'>No albums found yet.</div>
+			</div>
+		);
+	}
 
 	return (
 		<Table>

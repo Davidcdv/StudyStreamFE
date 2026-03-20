@@ -3,7 +3,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useMusicStore } from "@/stores/useMusicStore";
-import { Brain, HomeIcon, Library } from "lucide-react";
+import { Brain, LayoutDashboard, Library } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const LeftSidebar = () => {
 			<div className='rounded-lg bg-zinc-900 p-4'>
 				<div className='space-y-2'>
 					<Link
-						to={"/"}
+						to={"/app"}
 						className={cn(
 							buttonVariants({
 								variant: "ghost",
@@ -29,8 +29,8 @@ const LeftSidebar = () => {
 							})
 						)}
 					>
-						<HomeIcon className='mr-2 size-5' />
-						<span className='hidden md:inline'>Home</span>
+						<LayoutDashboard className='mr-2 size-5' />
+						<span className='hidden md:inline'>Dashboard</span>
 					</Link>
 
 					<Link

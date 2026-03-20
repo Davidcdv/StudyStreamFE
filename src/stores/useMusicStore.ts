@@ -21,6 +21,7 @@ interface MusicStore {
 	fetchTrendingSongs: () => Promise<void>;
 	fetchStats: () => Promise<void>;
 	fetchSongs: () => Promise<void>;
+	loadAdminData: () => Promise<void>;
 	deleteSong: (id: string) => Promise<void>;
 	deleteAlbum: (id: string) => Promise<void>;
 }
@@ -83,6 +84,29 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			set({ songs: response.data });
 		} catch (error: any) {
 			set({ error: error.message });
+		} finally {
+			set({ isLoading: false });
+		}
+	},
+
+	loadAdminData: async () => {
+		set({ isLoading: true, error: null });
+		try {
+			const [albumsResponse, songsResponse, statsResponse] = await Promise.all([
+				axiosInstance.get("/albums"),
+				axiosInstance.get("/songs"),
+				axiosInstance.get("/stats"),
+			]);
+
+			set({
+				albums: albumsResponse.data,
+				songs: songsResponse.data,
+				stats: statsResponse.data,
+			});
+		} catch (error: any) {
+			set({
+				error: error?.response?.data?.message || error?.message || "Failed to load admin data",
+			});
 		} finally {
 			set({ isLoading: false });
 		}

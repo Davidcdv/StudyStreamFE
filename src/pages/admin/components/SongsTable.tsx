@@ -22,6 +22,14 @@ const SongsTable = () => {
 		);
 	}
 
+	if (songs.length === 0) {
+		return (
+			<div className='flex items-center justify-center py-8'>
+				<div className='text-zinc-400'>No songs found yet.</div>
+			</div>
+		);
+	}
+
 	return (
 		<Table>
 			<TableHeader>
