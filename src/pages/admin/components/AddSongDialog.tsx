@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { axiosInstance } from "@/lib/axios";
 import { useMusicStore } from "@/stores/useMusicStore";
+import { useAuth } from "@clerk/clerk-react";
 import { Plus, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -24,7 +25,8 @@ interface NewSong {
 }
 
 const AddSongDialog = () => {
-	const { albums } = useMusicStore();
+	const { albums, loadAdminData } = useMusicStore();
+	const { getToken } = useAuth();
 	const [songDialogOpen, setSongDialogOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -63,9 +65,12 @@ const AddSongDialog = () => {
 			formData.append("audioFile", files.audio);
 			formData.append("imageFile", files.image);
 
+			const token = await getToken();
+
 			await axiosInstance.post("/admin/songs", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
+					...(token ? { Authorization: `Bearer ${token}` } : {}),
 				},
 			});
 
@@ -80,9 +85,11 @@ const AddSongDialog = () => {
 				audio: null,
 				image: null,
 			});
+			setSongDialogOpen(false);
+			await loadAdminData();
 			toast.success("Song added successfully");
 		} catch (error: any) {
-			toast.error("Failed to add song: " + error.message);
+			toast.error("Failed to add song: " + (error?.response?.data?.message || error.message));
 		} finally {
 			setIsLoading(false);
 		}

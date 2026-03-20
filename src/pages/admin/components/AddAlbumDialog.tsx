@@ -10,11 +10,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { axiosInstance } from "@/lib/axios";
+import { useMusicStore } from "@/stores/useMusicStore";
+import { useAuth } from "@clerk/clerk-react";
 import { Plus, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 const AddAlbumDialog = () => {
+	const { loadAdminData } = useMusicStore();
+	const { getToken } = useAuth();
 	const [albumDialogOpen, setAlbumDialogOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -48,9 +52,12 @@ const AddAlbumDialog = () => {
 			formData.append("releaseYear", newAlbum.releaseYear.toString());
 			formData.append("imageFile", imageFile);
 
+			const token = await getToken();
+
 			await axiosInstance.post("/admin/albums", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
+					...(token ? { Authorization: `Bearer ${token}` } : {}),
 				},
 			});
 
@@ -61,9 +68,10 @@ const AddAlbumDialog = () => {
 			});
 			setImageFile(null);
 			setAlbumDialogOpen(false);
+			await loadAdminData();
 			toast.success("Album created successfully");
 		} catch (error: any) {
-			toast.error("Failed to create album: " + error.message);
+			toast.error("Failed to create album: " + (error?.response?.data?.message || error.message));
 		} finally {
 			setIsLoading(false);
 		}
