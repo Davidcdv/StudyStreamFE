@@ -50,12 +50,12 @@ const LeftSidebar = ({ compact = false }: { compact?: boolean }) => {
 						<Library className='size-4 mr-2' />
 						<span className='text-sm font-medium'>Playlists</span>
 					</div>
-					<div className='-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+					<div className='grid grid-cols-2 gap-3'>
 						{isLoading
 							? Array.from({ length: 3 }, (_, index) => (
 									<div
 										key={`playlist-skeleton-${index}`}
-										className='min-w-[160px] snap-start animate-pulse rounded-xl bg-zinc-800 p-3'
+										className='animate-pulse rounded-xl bg-zinc-800 p-3'
 									>
 										<div className='mb-2 h-20 rounded-lg bg-zinc-700' />
 										<div className='h-3 rounded bg-zinc-700' />
@@ -65,7 +65,7 @@ const LeftSidebar = ({ compact = false }: { compact?: boolean }) => {
 									<Link
 										to={`/albums/${album._id}`}
 										key={album._id}
-										className='min-w-[170px] snap-start rounded-xl border border-white/10 bg-zinc-800/60 p-3'
+										className='rounded-xl border border-white/10 bg-zinc-800/60 p-3'
 									>
 										<img
 											src={album.imageUrl}

@@ -20,11 +20,11 @@ const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
 				</Button>
 			</div>
 
-			<div className='flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-4'>
+			<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
 				{songs.map((song) => (
 					<div
 						key={song._id}
-						className='min-w-[220px] snap-start bg-zinc-800/40 p-4 rounded-md hover:bg-zinc-700/40 transition-all group cursor-pointer sm:min-w-0'
+						className='bg-zinc-800/40 p-4 rounded-md hover:bg-zinc-700/40 transition-all group cursor-pointer'
 					>
 						<div className='relative mb-4'>
 							<div className='aspect-square rounded-md shadow-lg overflow-hidden'>

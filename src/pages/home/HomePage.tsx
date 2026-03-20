@@ -45,7 +45,7 @@ const HomePage = () => {
 	return (
 		<main className='rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900 flex flex-col'>
 			<Topbar />
-			<div className='flex-1 min-h-0 overflow-y-auto overscroll-contain'>
+			<div className='flex-1 min-h-0 md:overflow-y-auto md:overscroll-contain'>
 				<div className='p-4 pb-6 sm:p-6'>
 					<h1 className='text-2xl sm:text-3xl font-bold mb-6'>Good afternoon</h1>
 

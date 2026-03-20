@@ -24,12 +24,10 @@ const MainLayout = () => {
 	if (isMobile) {
 		return (
 			<div className='h-screen bg-black text-white flex flex-col'>
-				<div className='flex-1 overflow-hidden p-2'>
-					<div className='grid h-full grid-rows-[auto_1fr] gap-2'>
+				<div className='flex-1 overflow-y-auto p-2'>
+					<div className='flex flex-col gap-2 pb-2'>
 						<LeftSidebar compact />
-						<div className='min-h-0 overflow-hidden'>
-							<Outlet />
-						</div>
+						<Outlet />
 					</div>
 				</div>
 
