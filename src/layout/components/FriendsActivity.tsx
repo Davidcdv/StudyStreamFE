@@ -1,7 +1,18 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFocusStore } from "@/stores/useFocusStore";
 import { usePlayerStore } from "@/stores/usePlayerStore";
-import { BarChart3, Brain, Clock3, Lightbulb, MoonStar, Sparkles, Volume2 } from "lucide-react";
+import {
+	BarChart3,
+	Brain,
+	ChevronLeft,
+	ChevronRight,
+	Clock3,
+	Lightbulb,
+	MoonStar,
+	Sparkles,
+	Volume2,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 const formatRecommendationLabel = (recommendationId: string | null) => {
 	switch (recommendationId) {
@@ -29,20 +40,34 @@ const getAmbientLabel = (ambientSound: string) => {
 	}
 };
 
-const getStudyTip = (completedSessions: number, totalFocusMinutes: number, isSessionActive: boolean) => {
+const buildStudyTips = (
+	completedSessions: number,
+	totalFocusMinutes: number,
+	isSessionActive: boolean,
+	currentMode: string,
+	ambientLabel: string
+) => {
+	const tips = [
+		"Start with one clear task before you press play. A focused session works better when your goal is specific.",
+		`Use ${ambientLabel === "Off" ? "a light ambient layer" : ambientLabel} to mask background distractions without overpowering the music.`,
+		`Your current setup is geared toward ${currentMode.toLowerCase()}. Match the playlist to the type of work you are doing.`,
+	];
+
 	if (isSessionActive) {
-		return "Stay with one task until the timer ends. Context switching is the biggest focus killer.";
+		tips.unshift("Stay with one task until the timer ends. Context switching is the biggest focus killer.");
+	} else {
+		tips.unshift("Start with just one 25-minute block. Small, repeatable sessions beat long unstructured study.");
 	}
 
 	if (completedSessions >= 4) {
-		return "You have done a solid amount of focused work today. Take a proper longer break before your next block.";
+		tips.push("You have done a solid amount of focused work today. Take a proper longer break before your next block.");
 	}
 
 	if (totalFocusMinutes >= 50) {
-		return "You are building momentum. Pair the next session with a short recap before you start.";
+		tips.push("You are building momentum. Pair the next session with a short recap before you start.");
 	}
 
-	return "Start with just one 25-minute block. Small, repeatable sessions beat long unstructured study.";
+	return tips;
 };
 
 const FriendsActivity = () => {
@@ -65,8 +90,26 @@ const FriendsActivity = () => {
 	const remainingMinutes = Math.ceil(remainingSeconds / 60);
 	const currentMode = formatRecommendationLabel(activeRecommendationId);
 	const ambientLabel = getAmbientLabel(selectedAmbientSound);
-	const studyTip = getStudyTip(completedSessions, totalFocusMinutes, isSessionActive);
 	const currentStatus = isSessionActive ? (isSessionPaused ? "Paused" : "In Focus Session") : "Ready for next session";
+	const studyTips = useMemo(
+		() => buildStudyTips(completedSessions, totalFocusMinutes, isSessionActive, currentMode, ambientLabel),
+		[completedSessions, totalFocusMinutes, isSessionActive, currentMode, ambientLabel]
+	);
+	const [tipIndex, setTipIndex] = useState(0);
+
+	useEffect(() => {
+		setTipIndex((currentIndex) => Math.min(currentIndex, studyTips.length - 1));
+	}, [studyTips.length]);
+
+	useEffect(() => {
+		if (studyTips.length <= 1) return;
+
+		const timer = window.setInterval(() => {
+			setTipIndex((currentIndex) => (currentIndex + 1) % studyTips.length);
+		}, 5000);
+
+		return () => window.clearInterval(timer);
+	}, [studyTips.length]);
 
 	return (
 		<div className='h-full bg-zinc-900 rounded-lg flex flex-col'>
@@ -170,11 +213,41 @@ const FriendsActivity = () => {
 						</div>
 
 						<div className='rounded-2xl border border-white/10 bg-zinc-800/60 p-4'>
-							<div className='flex items-center gap-2 text-zinc-300'>
-								<Lightbulb className='size-4 text-amber-300' />
-								<span className='text-sm font-medium'>Focus tip</span>
+							<div className='flex items-center justify-between gap-3 text-zinc-300'>
+								<div className='flex items-center gap-2'>
+									<Lightbulb className='size-4 text-amber-300' />
+									<span className='text-sm font-medium'>Focus tips</span>
+								</div>
+								<div className='flex items-center gap-1'>
+									<button
+										type='button'
+										onClick={() => setTipIndex((currentIndex) => (currentIndex - 1 + studyTips.length) % studyTips.length)}
+										className='rounded-full bg-black/20 p-1.5 text-zinc-400 transition hover:text-white'
+										aria-label='Previous focus tip'
+									>
+										<ChevronLeft className='size-4' />
+									</button>
+									<button
+										type='button'
+										onClick={() => setTipIndex((currentIndex) => (currentIndex + 1) % studyTips.length)}
+										className='rounded-full bg-black/20 p-1.5 text-zinc-400 transition hover:text-white'
+										aria-label='Next focus tip'
+									>
+										<ChevronRight className='size-4' />
+									</button>
+								</div>
 							</div>
-							<p className='mt-3 text-sm leading-6 text-zinc-300'>{studyTip}</p>
+							<p className='mt-3 min-h-[72px] text-sm leading-6 text-zinc-300'>{studyTips[tipIndex]}</p>
+							<div className='mt-3 flex gap-1.5'>
+								{studyTips.map((_, index) => (
+									<div
+										key={`tip-${index}`}
+										className={`h-1.5 flex-1 rounded-full ${
+											index === tipIndex ? "bg-emerald-400" : "bg-white/10"
+										}`}
+									/>
+								))}
+							</div>
 						</div>
 					</div>
 				</div>
