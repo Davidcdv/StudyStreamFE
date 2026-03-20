@@ -23,15 +23,14 @@ const MainLayout = () => {
 
 	if (isMobile) {
 		return (
-			<div className='h-screen bg-black text-white flex flex-col'>
-				<div className='flex-1 overflow-y-auto p-2'>
-					<div className='flex flex-col gap-2 pb-2'>
+			<div className='min-h-screen bg-black text-white'>
+				<div className='flex flex-col gap-2 p-2 pb-36'>
 						<LeftSidebar compact />
 						<Outlet />
-					</div>
 				</div>
-
-				<PlaybackControls />
+				<div className='fixed inset-x-0 bottom-0 z-20'>
+					<PlaybackControls />
+				</div>
 			</div>
 		);
 	}

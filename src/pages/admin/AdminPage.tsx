@@ -66,14 +66,14 @@ const AdminPage = () => {
 	return (
 		<div
 			className='min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900
-   to-black text-zinc-100 p-8'
+   to-black text-zinc-100 p-4 sm:p-6 lg:p-8'
 		>
 			<Header />
 
 			<DashboardStats />
 
 			<Tabs defaultValue='songs' className='space-y-6'>
-				<TabsList className='p-1 bg-zinc-800/50'>
+				<TabsList className='grid w-full grid-cols-2 p-1 bg-zinc-800/50 sm:inline-flex sm:w-auto'>
 					<TabsTrigger value='songs' className='data-[state=active]:bg-zinc-700'>
 						<Music className='mr-2 size-4' />
 						Songs
