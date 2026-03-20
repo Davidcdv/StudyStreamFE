@@ -27,7 +27,7 @@ const MainLayout = () => {
 				<div className='flex-1 overflow-hidden p-2'>
 					<div className='grid h-full grid-rows-[auto_1fr] gap-2'>
 						<LeftSidebar compact />
-						<div className='min-h-0'>
+						<div className='min-h-0 overflow-hidden'>
 							<Outlet />
 						</div>
 					</div>

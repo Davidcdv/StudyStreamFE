@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { useEffect, useMemo } from "react";
 import FeaturedSection from "./components/FeaturedSection";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import SectionGrid from "./components/SectionGrid";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { Brain, Clock3, Sparkles } from "lucide-react";
@@ -46,8 +45,8 @@ const HomePage = () => {
 	return (
 		<main className='rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900 flex flex-col'>
 			<Topbar />
-			<ScrollArea className='flex-1 min-h-0'>
-				<div className='p-4 sm:p-6'>
+			<div className='flex-1 min-h-0 overflow-y-auto overscroll-contain'>
+				<div className='p-4 pb-6 sm:p-6'>
 					<h1 className='text-2xl sm:text-3xl font-bold mb-6'>Good afternoon</h1>
 
 					<section className='mb-8 rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/15 via-zinc-900 to-zinc-900 p-5'>
@@ -115,7 +114,7 @@ const HomePage = () => {
 						<SectionGrid title='Trending' songs={trendingSongs} isLoading={isLoading} />
 					</div>
 				</div>
-			</ScrollArea>
+			</div>
 		</main>
 	);
 };
